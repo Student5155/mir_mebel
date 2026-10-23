@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mir-mebeli.example/sitemap.xml
