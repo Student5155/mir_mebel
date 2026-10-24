@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Карточка товара | Мир мебели</title>
+  <meta name="description" content="Цена, размеры, материалы, комплектация, доставка и сборка. Мебельный магазин «Мир мебели», с. Верхние Киги.">
+  <meta name="theme-color" content="#F7F3EC">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css?v=3">
+</head>
+<body data-page="product" class="has-buybar">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
+  <div id="site-header" style="min-height:var(--header-h)"></div>
+
+  <main id="main">
+    <div class="container" style="padding-top:var(--sp-5)">
+      <nav aria-label="Хлебные крошки"><ol class="crumbs" style="list-style:none;padding:0" data-crumbs></ol></nav>
+      <div class="pdp" data-pdp></div>
+      <div class="pdp-info" data-info></div>
+    </div>
+
+    <section class="section" aria-labelledby="rel-title">
+      <div class="container">
+        <div class="section-head"><div class="section-head__text"><span class="eyebrow">Ещё в разделе</span><h2 class="h2" id="rel-title">С этой моделью смотрят</h2></div></div>
+        <div class="grid-products" data-related></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="buybar" data-buybar></div>
+  <div id="site-footer"></div>
+
+  <script src="assets/js/data.js?v=3" defer></script>
+  <script src="assets/js/app.js?v=3" defer></script>
+  <script src="assets/js/product.js?v=3" defer></script>
+</body>
+</html>
