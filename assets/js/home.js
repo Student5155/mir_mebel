@@ -9,7 +9,7 @@
   $('[data-cats]').innerHTML = MM.categories.map((c, i) => {
     const n = MM.products.filter((p) => p.cat === c.id).length;
     return `<a class="cat-tile reveal" style="--d:${(i % 4) * 0.06}s" href="catalog.html?cat=${c.id}">
-      <img src="${img(c.img, i === 0 ? 1100 : 640, i === 0 ? 800 : 820)}" srcset="${srcset(c.img, i === 0 ? 1.375 : 0.78)}" sizes="(max-width: 900px) ${i === 0 ? '100vw' : '50vw'}, ${i === 0 ? '50vw' : '25vw'}" alt="${c.name}" loading="lazy">
+      <img src="${img(c.img, i === 0 ? 1100 : 640, i === 0 ? 800 : 820)}" srcset="${srcset(c.img, i === 0 ? 1.375 : 0.78)}" sizes="(max-width: 900px) ${i === 0 ? '60vw' : '30vw'}, ${i === 0 ? '50vw' : '25vw'}" alt="${c.name}" loading="lazy">
       <span class="cat-tile__label"><span><b>${c.name}</b><span>${n} модели · от ${fmt(c.from)}</span></span><span class="cat-tile__go">${ic('arrow')}</span></span>
     </a>`;
   }).join('');

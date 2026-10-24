@@ -263,7 +263,7 @@
     return `
     <article class="card reveal" style="--d:${(i % 4) * 0.06}s">
       <div class="card__media">
-        <img src="${img(p.img, 600, 510)}" srcset="${srcset(p.img, 600 / 510)}" sizes="(max-width: 900px) 50vw, 25vw" alt="${p.name}" loading="lazy" width="600" height="510">
+        <img src="${img(p.img, 600, 510)}" srcset="${srcset(p.img, 600 / 510)}" sizes="(max-width: 900px) 30vw, 25vw" alt="${p.name}" loading="lazy" width="600" height="510">
         <div class="card__badges">${sale ? `<span class="tag tag--sale">−${sale}%</span>` : ''}${p.inStock ? '' : '<span class="tag">Под заказ</span>'}</div>
         <div class="card__tools">
           <button class="card__tool" data-fav="${p.id}" aria-pressed="false" aria-label="В избранное">${ic('heart')}</button>

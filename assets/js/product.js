@@ -25,8 +25,10 @@
     <div class="gallery">
       <div class="gallery__thumbs" role="list">${p.gallery.map((g, i) => `<button class="gallery__thumb" role="listitem" data-thumb="${i}" aria-current="${i === 0}" aria-label="Фото ${i + 1}"><img src="${img(g, 200, 200)}" alt="" width="88" height="88"></button>`).join('')}</div>
       <div>
-        <div class="gallery__main" data-main tabindex="0" aria-label="Открыть фото на весь экран" role="button">
-          <img data-main-img src="${img(p.gallery[0], 1200, 1056)}" srcset="${srcset(p.gallery[0], 1200 / 1056)}" sizes="(max-width: 900px) 100vw, 55vw" alt="${p.name}, фото 1" width="1200" height="1056" fetchpriority="high">
+        <div class="gallery__main" data-main>
+          <div class="gallery__track" data-track aria-label="Фото товара — листайте влево и вправо">
+            ${p.gallery.map((g, i) => `<button class="gallery__slide" data-slide="${i}" aria-label="Открыть фото ${i + 1} на весь экран"><img src="${img(g, 960)}" srcset="${srcset(g)}" sizes="(max-width: 900px) 100vw, 55vw" alt="${p.name}, фото ${i + 1}" width="960" height="845" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} draggable="false"></button>`).join('')}
+          </div>
           <button class="gallery__nav gallery__nav--prev" data-step="-1" aria-label="Предыдущее фото">${ic('left')}</button>
           <button class="gallery__nav gallery__nav--next" data-step="1" aria-label="Следующее фото">${ic('right')}</button>
           <span class="gallery__zoom">${ic('zoom')}Увеличить</span>
@@ -154,9 +156,8 @@
       MM.openLayer('consult');
       $('#c-msg').value = `Рассчитайте доставку: ${p.name}${a ? ', адрес: ' + a : ''}`;
     }
-    else if ('main' in d && !e.target.closest('.gallery__nav')) openLightbox(S.i);
+    else if (d.slide) openLightbox(+d.slide);
   });
-  $('[data-main]').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(S.i); } });
   $('[data-lift]').addEventListener('change', (e) => { S.lift = e.target.value; update(); });
   $('[data-where]').addEventListener('change', (e) => { S.where = e.target.value; update(); });
   $('[data-floor]').addEventListener('input', (e) => { S.floor = Math.max(2, Math.min(16, +e.target.value || 2)); update(); });
@@ -164,15 +165,21 @@
 
   /* ---------- Галерея ---------- */
   const n = p.gallery.length;
+  /* Лента фото листается пальцем (нативная прокрутка с «защёлкиванием»), стрелки и миниатюры её прокручивают. */
+  const track = $('[data-track]');
+  const mark = (i) => {
+    S.i = i;
+    $$('[data-thumb]').forEach((b, k) => b.setAttribute('aria-current', k === i));
+    $$('.gallery__dots span').forEach((s, k) => s.classList.toggle('is-on', k === i));
+  };
   function show(i) {
-    S.i = (i + n) % n;
-    const im = $('[data-main-img]'); const g = p.gallery[S.i];
-    im.style.opacity = 0.4;
-    im.src = img(g, 1200, 1056); im.srcset = srcset(g, 1200 / 1056); im.alt = `${p.name}, фото ${S.i + 1}`;
-    im.onload = () => (im.style.opacity = 1);
-    $$('[data-thumb]').forEach((b, k) => b.setAttribute('aria-current', k === S.i));
-    $$('.gallery__dots span').forEach((s, k) => s.classList.toggle('is-on', k === S.i));
+    i = (i + n) % n; mark(i);
+    track.scrollTo({ left: i * track.clientWidth, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   }
+  track.addEventListener('scroll', () => {
+    const i = Math.round(track.scrollLeft / track.clientWidth);
+    if (i !== S.i && i >= 0 && i < n) mark(i);
+  }, { passive: true });
   const swipe = (el, fn) => {
     let x0 = null, y0 = null;
     el.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
@@ -181,13 +188,12 @@
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) fn(dx < 0 ? 1 : -1); x0 = null;
     });
   };
-  swipe($('[data-main]'), (s) => show(S.i + s));
 
   /* Лайтбокс с увеличением */
   const lb = $('#lightbox'); const lbImg = $('img', lb); let li = 0;
   function lbShow(i) {
     li = (i + n) % n; lbImg.classList.remove('is-zoomed');
-    lbImg.src = img(p.gallery[li], 2000); lbImg.alt = `${p.name}, фото ${li + 1}`;
+    lbImg.src = img(p.gallery[li], 1280); lbImg.alt = `${p.name}, фото ${li + 1}`;
     $('.lightbox__count', lb).textContent = `${li + 1} / ${n}`;
   }
   function openLightbox(i) { lbShow(i); MM.openLayer('lightbox'); }

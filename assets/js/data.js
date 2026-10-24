@@ -1,13 +1,15 @@
 /* Каталог «Мир мебели». Пока — по два товара в каждом разделе. */
 window.MM = window.MM || {};
 
-MM.img = (id, w = 800, h) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}${h ? `&h=${h}` : ''}&q=72`;
-
-MM.srcset = (id, ratio) =>
-  [480, 800, 1200]
-    .map((w) => `${MM.img(id, w, ratio ? Math.round(w / ratio) : undefined)} ${w}w`)
-    .join(', ');
+/* Фото хранятся в самом проекте (assets/img) в трёх размерах:
+   480 px (~30 КБ) — для телефонов, 960 px — для компьютеров,
+   1280 px — только для просмотра на весь экран. Обрезка — через CSS (object-fit). */
+MM.big = new Set(); // id фото, у которых есть версия 1280 px (заполняется ниже)
+MM.img = (id, w = 800) => {
+  const size = w <= 500 ? 480 : w <= 1000 || !MM.big.has(id) ? 960 : 1280;
+  return `assets/img/${id}-${size}.jpg`;
+};
+MM.srcset = (id) => `${MM.img(id, 480)} 480w, ${MM.img(id, 960)} 960w`;
 
 MM.store = {
   name: 'Мир мебели',
@@ -217,3 +219,6 @@ MM.reviews = [
 MM.byId = (id) => MM.products.find((p) => p.id === id);
 MM.catById = (id) => MM.categories.find((c) => c.id === id);
 MM.fmt = (n) => n.toLocaleString('ru-RU').replace(/,/g, ' ') + ' ₽';
+
+MM.products.forEach((p) => p.gallery.forEach((g) => MM.big.add(g)));
+MM.big.add('1633505899118-4ca6bd143043');
